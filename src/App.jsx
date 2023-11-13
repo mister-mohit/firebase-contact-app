@@ -1,7 +1,38 @@
+import { useEffect, useState } from "react";
 import {AiOutlineSearch} from "react-icons/ai";
-import {MdAddCircle} from "react-icons/md";
+import {MdAddCircle, MdCollections} from "react-icons/md";
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import { db } from "./config/firebase";
+import ContactCard from "./components/ContactCard";
 
 function App() {
+
+  const [contacts, setContacts] = useState([]);
+
+  useEffect(() => {
+
+    async function getContactList(){
+      try {
+        const contactRef = collection(db, "contacts");
+        onSnapshot(contactRef, (doc) => {
+          const contactList = doc.docs.map((contact) => {
+            return {
+              id: contact.id,
+              ...contact.data()
+            }
+          }) 
+
+          setContacts(contactList);
+    
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    getContactList();
+
+  }, []);
 
   return (
   <div className="max-w-[360px] mx-auto p-2">
@@ -24,7 +55,11 @@ function App() {
     </div>
 
     {/*div for contact cards*/}
-    
+    <div className="flex flex-col gap-3 mt-5">
+      {contacts.map((contact) => 
+        <ContactCard key={contact.id} contact={contact} />
+      )}
+    </div>
 
   </div>
     );
