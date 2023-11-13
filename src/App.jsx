@@ -4,10 +4,20 @@ import {MdAddCircle, MdCollections} from "react-icons/md";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 import { db } from "./config/firebase";
 import ContactCard from "./components/ContactCard";
+import AddandUpdate from "./components/AddandUpdate";
 
 function App() {
 
   const [contacts, setContacts] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+
+  function onOpen(){
+    setIsOpen(true);
+  }
+
+  function onClose(){
+    setIsOpen(false);
+  }
 
   useEffect(() => {
 
@@ -37,7 +47,7 @@ function App() {
   return (
   <div className="max-w-[360px] mx-auto p-2">
 
-    {/*Div for the navigation bar */ }
+    {/*div for the navigation bar */ }
     <div className="flex bg-white rounded-md h-[60px] justify-center items-center gap-2 ">
       <div>
         <img src="logos_firebase.png" alt="logo" />
@@ -51,7 +61,7 @@ function App() {
         <AiOutlineSearch className="text-2xl absolute top-[28%] left-1"/>
         <input className="h-[40px] rounded-md bg-transparent border-white border-2 pl-7 placeholder-white flex-grow " placeholder="Search contact" />
       </div>
-      <MdAddCircle className="text-5xl" />
+      <MdAddCircle onClick={onOpen} className="text-5xl" />
     </div>
 
     {/*div for contact cards*/}
@@ -60,6 +70,9 @@ function App() {
         <ContactCard key={contact.id} contact={contact} />
       )}
     </div>
+
+    {/*div for ADD and UPDATE contact Modal */}
+    <AddandUpdate isOpen={isOpen}  onClose={onClose} />
 
   </div>
     );
